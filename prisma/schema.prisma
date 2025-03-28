@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ImportStatus {
+  WAITING
+  FINISHED
+}
+
+model Vendor {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  isDel    Boolean   @default(false)
+  remark   String?
+  createAt DateTime  @default(now())
+  updateAt DateTime  @updatedAt
+  img      String?
+  products Product[]
+}
+
+// 进货表
+model Purchase {
+  id                Int                 @id @default(autoincrement())
+  isDel             Boolean             @default(false)
+  remark            String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+  purchaseDate      DateTime            @db.Date
+  totalCost         Int? // 总价
+  importStatus      ImportStatus        @default(WAITING) // 进货订单状态
+  productJoinImport ProductJoinImport[]
+  userId            Int
+  user              User                @relation(fields: [userId], references: [id])
+  confirmDate       DateTime?           @db.Date // 确认收货日期
+}
+
+model Product {
+  id                   Int                    @id @default(autoincrement())
+  name                 String                 @unique
+  img                  String?
+  vendorId             Int
+  remark               String?
+  balance              Int?                   @default(0) @db.UnsignedSmallInt
+  isDel                Boolean                @default(false)
+  createAt             DateTime               @default(now())
+  updateAt             DateTime               @updatedAt
+  price                Int?                   @db.UnsignedSmallInt // 最新售价
+  cost                 Int?                   @db.UnsignedSmallInt // 最新成本价
+  vendor               Vendor                 @relation(fields: [vendorId], references: [id])
+  imports              ProductJoinImport[]
+  trolleyJoinProduct   TrolleyJoinProduct[] // 采购车中间表
+  exportProduct        ExportProduct[] // 出货商品中间表
+  exportTrolleyProduct ExportTrolleyProduct[]
+
+  @@index([vendorId], map: "Product_brandId_fkey")
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  email         String?         @unique
+  username      String
+  createAt      DateTime        @default(now())
+  updateAt      DateTime        @updatedAt
+  password      String
+  avatar        String?
+  role          String          @default("staff")
+  isDel         Boolean         @default(false)
+  trolley       Trolley[]
+  import        Purchase[]
+  export        Export[]
+  exportTrolley ExportTrolley[]
+}
+
+model ProductJoinImport {
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  importId  Int
+  import    Purchase @relation(fields: [importId], references: [id])
+
+  cost  Int @db.UnsignedSmallInt // 最新成本价
+  count Int @db.UnsignedSmallInt // 商品数量
+
+  @@id([productId, importId])
+}
+
+model Trolley {
+  id                 Int                  @id @default(autoincrement())
+  trolleyJoinProduct TrolleyJoinProduct[]
+  createAt           DateTime             @default(now())
+  updateAt           DateTime             @updatedAt
+  remark             String?
+  userId             Int                  @unique
+  user               User                 @relation(fields: [userId], references: [id])
+}
+
+model TrolleyJoinProduct {
+  trolleyId Int
+  trolley   Trolley @relation(fields: [trolleyId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  count     Int     @db.UnsignedSmallInt // 某个sku的采购数量
+  cost      Int     @default(0) @db.UnsignedSmallInt // 成本价
+
+  @@id([trolleyId, productId])
+}
+
+enum Platform {
+  XIANYU // 闲鱼
+  PINDUODUO // 拼多多
+  TAOBAO // 淘宝
+  DOUYIN // 抖音
+  OTHER
+}
+
+enum ExportStatus {
+  PENDING // 商家处理中
+  DELIVERY // 运输中
+  FINISHED // 已完成
+}
+
+enum Express {
+  SHUNFENG // 顺丰  
+  ZHONGTONG // 中通
+  SHENTONG // 申通
+  YUNDA // 韵达
+  OTHER // 其他
+}
+
+model ExportTrolley {
+  id                   Int                    @id @default(autoincrement())
+  exportTrolleyProduct ExportTrolleyProduct[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
+  createdUserId        Int
+  createdUser          User                   @relation(fields: [createdUserId], references: [id])
+}
+
+model ExportTrolleyProduct {
+  productId       Int
+  product         Product       @relation(fields: [productId], references: [id])
+  count           Int           @db.UnsignedSmallInt // 某个sku的采购数量
+  price           Int           @default(0) @db.UnsignedSmallInt // 成本价
+  exportTrolley   ExportTrolley @relation(fields: [exportTrolleyId], references: [id])
+  exportTrolleyId Int
+
+  @@id([exportTrolleyId, productId])
+}
+
+// 出货表
+model Export {
+  id              Int             @id @default(autoincrement())
+  totalPrice      Int             @db.UnsignedSmallInt
+  purchaseDate    DateTime?       @db.Date // 购买日期
+  confirmDate     DateTime?       @db.Date // 确认收货日期
+  platform        Platform?
+  platformOrderNo String? // 平台订单号
+  clientId        Int?
+  client          Client?         @relation(fields: [clientId], references: [id])
+  remark          String?
+  status          ExportStatus    @default(PENDING)
+  exportProduct   ExportProduct[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+  createdUserId   Int
+  createdUser     User            @relation(fields: [createdUserId], references: [id])
+  express         Express? // 快递公司
+  expressNo       String? // 快递单号
+  expressFee      Int?            @db.TinyInt
+}
+
+model ExportProduct {
+  exportId  Int
+  export    Export  @relation(fields: [exportId], references: [id])
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+  price     Int     @db.UnsignedSmallInt // 成交价
+  count     Int     @db.UnsignedSmallInt // 数量
+
+  @@id([exportId, productId])
+}
+
+model Client {
+  id     Int      @id @default(autoincrement())
+  name   String   @db.VarChar(10)
+  remark String?
+  badGuy Boolean  @default(false) // 是否恶意退单用户
+  Export Export[]
+}

@@ -23,7 +23,7 @@ Content-Type: application/json
 {
     "username": "test4",
     "password": "1234567",
-    "email": "test4@qq.com"
+    "email": "test34@qq.com"
 }
 
 ### user list
