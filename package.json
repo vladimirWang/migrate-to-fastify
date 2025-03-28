@@ -1,0 +1,38 @@
+{
+  "name": "migrate-to-fastify",
+  "version": "1.0.0",
+  "description": "333",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx dotenv -e .env.development npx nodemon app.js",
+    "dev2": "npx dotenv -e .env.development pm2 start ecosystem.config.js",
+    "start": "npx dotenv -e .env.production pm2 start ecosystem.config.js",
+    "start:debug": "npx dotenv -e .env.production nodemon app.js",
+    "db:push": "npx dotenv -e .env.development -- prisma db push",
+    "db:pull": "npx dotenv -e .env.development -- prisma db pull",
+    "migrate:dev": "npx dotenv -e .env.development -- prisma migrate dev",
+    "migrate-status:dev": "npx dotenv -e .env.development -- prisma migrate status",
+    "migrate:prod": "npx dotenv -e .env.production -- prisma migrate deploy",
+    "seed:dev": "npx dotenv -e .env.development -- prisma db seed"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vladimirWang/migrate-to-fastify.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vladimirWang/migrate-to-fastify/issues"
+  },
+  "homepage": "https://github.com/vladimirWang/migrate-to-fastify#readme",
+  "dependencies": {
+    "dotenv-cli": "^8.0.0",
+    "fastify": "^5.2.2",
+    "prisma": "^6.5.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.7",
+    "nodemon": "^3.1.9"
+  }
+}
