@@ -1,0 +1,66 @@
+@base=http://localhost:3000/api
+@path=/exportTrolley
+
+### 登录
+# @name login
+POST {{base}}/user/login
+Content-Type: application/json
+
+{
+    "password": "123456",
+    "username": "test1"
+}
+### 保存登录接口拿到的token
+@token={{login.response.body.$.data.token}}
+
+### 生成出货单
+POST {{base}}{{path}}
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "price": 50,
+    "count": 2,
+    "productId": 4,
+    "purchaseDate": "2025-01-03",
+    "platform": "PINDUODUO",
+    "platformOrderNo": "xianyu001",
+    "remark": "",
+    "express": "ZHONGTONG",
+    "products": [
+        {
+            "price": 50,
+            "count": 2,
+            "productId": 1
+        },
+        {
+            "price": 8,
+            "count": 2,
+            "productId": 4
+        },
+        {
+            "price": 5,
+            "count": 1,
+            "productId": 5
+        }
+    ]
+}
+
+### 出货列表详情
+GET {{base}}{{path}}/2
+Authorization: Bearer {{token}}
+
+### 修改出货单商品数量
+PUT {{base}}{{path}}/batch/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "checked": [
+        {
+            "id": 4,
+            "price": 90,
+            "count": 1
+        }
+    ]
+}

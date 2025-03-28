@@ -1,0 +1,93 @@
+@base=http://localhost:3000/api
+
+# @name login
+POST {{base}}/user/login
+Content-Type: application/json
+
+{
+    "password": "123456",
+    "username": "test1"
+}
+### 保存登录接口拿到的token
+@token={{login.response.body.$.data.token}}
+
+### user list
+GET {{base}}/import?limit=10&page=1
+Authorization: Bearer {{token}}
+
+### create import
+POST {{base}}/import
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "purchaseDate": "2025-01-09",
+    "remark": "importRemark",
+    "trolleyId": 14,
+    "products": [
+        {
+            "price": 100, 
+            "count": 2, 
+            "productId": 2
+        },
+        {
+            "price": 200, 
+            "count": 1, 
+            "productId": 3
+        }
+    ]
+}
+
+### test create import
+POST http://localhost:3000/api/test/aggregate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "remark": "importRemark",
+    "importProductRemark":"importProductRemark",
+    "price": 8, 
+    "cost": 5,
+    "count": 10, 
+    "productId": 2,
+    "purchaseDate": "2025-01-09",
+    "vendorId": 1
+}
+
+### 商品批量进货
+POST {{base}}/import/batch
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "remark": "importRemark",
+    "importProductRemark":"importProductRemark",
+    "purchaseDate": "2023-04-21",
+    "products": [
+        {
+            "vendorId": 2,
+            "price": 20, 
+            "count": 10, 
+            "productId": 7
+        },
+        {
+            "vendorId": 1,
+            "price": 90, 
+            "count": 1, 
+            "productId": 2
+        }
+    ]
+}
+
+### 撤销进货
+POST {{base}}/import/revoke
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "importId": 1,
+    "trolleyId": 2
+}
+
+### 删除进货单测试
+DELETE {{base}}/import/deleteTest

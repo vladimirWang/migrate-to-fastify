@@ -1,0 +1,23 @@
+@base=http://localhost:3000/api
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0MUBxcS5jb20iLCJ1c2VybmFtZSI6InRlc3QxIiwiY3JlYXRlQXQiOiIyMDI1LTAzLTA3VDE2OjU0OjAwLjI4OFoiLCJ1cGRhdGVBdCI6IjIwMjUtMDMtMDRUMDA6MDA6MDAuMDAwWiIsImF2YXRhciI6bnVsbCwicm9sZSI6InN0YWZmIiwiaXNEZWwiOmZhbHNlLCJmdWxsQXZhdGFyIjpudWxsLCJpYXQiOjE3NDE1NzA4NTQsImV4cCI6MTc0MTY1NzI1NH0.Jk7JpG8w0IViMsVXWnq_ysF4oRaLvlaptXVh7rXuz8Y
+
+# @name login
+POST {{base}}/user/client
+Content-Type: application/json
+
+{
+    "password": "123456",
+    "username": "test1"
+}
+
+### 生成出货单
+POST {{base}}/export
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "purchaseDate": "2021-01-03",
+    "platform": "XIANYU",
+    "platformOrderNo": "xianyu001",
+    "remark": ""
+}

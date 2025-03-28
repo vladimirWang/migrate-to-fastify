@@ -1,0 +1,51 @@
+@base=http://localhost:3000/api
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0MUBxcS5jb20iLCJ1c2VybmFtZSI6InRlc3QxIiwiY3JlYXRlQXQiOiIyMDI1LTAzLTExVDExOjA2OjAzLjg0OVoiLCJ1cGRhdGVBdCI6IjIwMjUtMDMtMDRUMDA6MDA6MDAuMDAwWiIsImF2YXRhciI6bnVsbCwicm9sZSI6InN0YWZmIiwiaXNEZWwiOmZhbHNlLCJmdWxsQXZhdGFyIjpudWxsLCJpYXQiOjE3NDE2NjM0MTEsImV4cCI6MTc0MTc0OTgxMX0.Kr14Kx0U6gd7wHFGrCnSHc8qh1H98b06ncecWBbXvsY
+
+# @name login
+POST {{base}}/user/login
+Content-Type: application/json
+
+{
+    "password": "123456",
+    "username": "test1"
+}
+
+### 生成出货单
+POST {{base}}/export
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "purchaseDate": "2025-01-03",
+    "platform": "PINDUODUO",
+    "platformOrderNo": "xianyu001",
+    "remark": "",
+    "express": "ZHONGTONG",
+    "products": [
+        {
+            "vendorId": 2,
+            "price": 50,
+            "count": 1,
+            "productId": 2
+        },
+        {
+            "vendorId": 3,
+            "price": 8,
+            "count": 2,
+            "productId": 4
+        }
+    ]
+}
+
+### 出货列表详情
+GET {{base}}/export/2
+Authorization: Bearer {{token}}
+
+### 修改出货单商品数量
+PUT {{base}}/export/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "productId": 4
+}

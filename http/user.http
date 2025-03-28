@@ -1,0 +1,77 @@
+@base=http://localhost:3000/api
+
+# @name login
+### user login
+POST {{base}}/user/login
+Content-Type: application/json
+
+{
+    "username": "test4",
+    "password": "1234567"
+}
+### 保存登录接口拿到的token
+@token={{login.response.body.$.data.token}}
+
+### user list
+GET {{base}}/user
+Authorization: Bearer {{token}}
+
+### user register
+POST {{base}}/user/register
+Content-Type: application/json
+
+{
+    "username": "test4",
+    "password": "1234567",
+    "email": "test4@qq.com"
+}
+
+### user list
+GET {{base}}/user
+Authorization: Bearer {{token}}
+
+### user info
+GET {{base}}/user/info
+Authorization: Bearer {{token}}
+
+### user update
+PUT {{base}}/user
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "username": "1234567890"
+}
+
+### user avatar
+POST {{base}}/avatar
+Authorization: Bearer {{token}}
+
+### user current
+GET {{base}}/user/current
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ0ZXN0MUBxcS5jb20iLCJ1c2VybmFtZSI6InRlc3QxIiwiY3JlYXRlQXQiOiIyMDI1LTAzLTE0VDE3OjU0OjMwLjE0OFoiLCJ1cGRhdGVBdCI6IjIwMjUtMDMtMDRUMDA6MDA6MDAuMDAwWiIsImF2YXRhciI6bnVsbCwicm9sZSI6InN0YWZmIiwiaXNEZWwiOmZhbHNlLCJmdWxsQXZhdGFyIjpudWxsLCJpYXQiOjE3NDI1MzA2MzAsImV4cCI6MTc0MjYxNzAzMH0.0judJXhP714gu4HQdLngNXaWohoDi41ljas7om4n9I8
+
+### user list
+GET {{base}}/import?limit=10&page=1
+Authorization: Bearer {{token}}
+
+### user avatar
+POST {{base}}/user/avatar
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="text"
+
+avatar
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="image"; filename="1.png"
+Content-Type: image/png
+
+< ./user.http
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
+
+### user info
+GET {{base}}/user/1
+Authorization: Bearer {{token}}
+

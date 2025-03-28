@@ -1,0 +1,18 @@
+@base=http://localhost:3000/api
+@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOm51bGwsInVzZXJuYW1lIjoiZmVybmFuZG8iLCJjcmVhdGVBdCI6IjIwMjUtMDMtMDZUMDY6MjA6MDcuOTU5WiIsInVwZGF0ZUF0IjoiMjAyNS0wMy0wNlQwNjoyMDowNy45NTlaIiwiYXZhdGFyIjpudWxsLCJyb2xlIjoic3RhZmYiLCJpc0RlbCI6ZmFsc2UsImlhdCI6MTc0MTI0MjE0MSwiZXhwIjoxNzQxMzI4NTQxfQ.JtfEPioJCSkjHbfwcCdYnrUJBnA805D-RLfUQC9YpzM
+
+### user list
+POST {{base}}/file/upload
+Authorization: Bearer {{token}}
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="text"
+
+title
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="file"; filename="1.png"
+Content-Type: image/webp
+
+< ./kfc.webp
+------WebKitFormBoundary7MA4YWxkTrZu0gW--
