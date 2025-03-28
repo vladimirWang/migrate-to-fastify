@@ -1,6 +1,7 @@
 // Import the framework and instantiate it
 import Fastify from "fastify";
-import { userLogin } from "./routes/userRoute.js";
+// import { userLogin } from "./routes/userRoute.js";
+import indexRoute from "./routes/indexRoute.js";
 
 const fastify = Fastify({
   logger: true,
@@ -11,13 +12,7 @@ const fastify = Fastify({
 //   return { hello: "world" };
 // });
 
-fastify.register(
-  (app, opts, done) => {
-    app.post("/user/login", userLogin);
-    done();
-  },
-  { prefix: "/api" }
-);
+fastify.register(indexRoute, { prefix: "/api" });
 
 // Run the server!
 try {
