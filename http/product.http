@@ -5,14 +5,20 @@ POST {{base}}/user/login
 Content-Type: application/json
 
 {
-    "password": "123456",
-    "username": "test1"
+    "username": "test4",
+    "password": "1234567"
 }
 ### 保存登录接口拿到的token
 @token={{login.response.body.$.data.token}}
 
-### user list
-GET {{base}}/product?limit=10&page=1&minCost=90&maxCost=210
+### product list
+# &minCost=90&maxCost=210
+GET {{base}}/product?limit=10&page=1
+Authorization: Bearer {{token}}
+
+
+### 商品详情
+GET {{base}}/product/getProductById/1
 Authorization: Bearer {{token}}
 
 ### create product
@@ -21,8 +27,8 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 {
-    "name": "nike2",
-    "vendorId": 1
+    "name": "手机贴膜",
+    "vendorId": 2
 }
 ### 前十库存商品
 GET {{base}}/product/productTopCount
@@ -31,3 +37,12 @@ Authorization: Bearer {{token}}
 ### 前十库存商品
 GET {{base}}/product/topValueProduct
 Authorization: Bearer {{token}}
+
+### 更新商品
+PUT {{base}}/product/updateProductById/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+    "name": "手机贴膜"
+}

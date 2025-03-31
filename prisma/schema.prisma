@@ -41,7 +41,7 @@ model Purchase {
 
 model Product {
   id                   Int                    @id @default(autoincrement())
-  name                 String                 @unique
+  name                 String
   img                  String?
   vendorId             Int
   remark               String?
