@@ -21,3 +21,7 @@ export const getValidNumber = (numberStr) => {
   const num = Number(numberStr);
   return isNaN(num) ? undefined : num;
 };
+
+export const getBaseUrl = (req) => {
+  return `${req.protocol}://${req.host}`;
+};

@@ -1,6 +1,6 @@
 import prisma from "../utils/prisma.js";
 import { z } from "zod";
-import { checkProductName } from "./helper.js";
+import { checkProductName, handleValidatorError } from "./helper.js";
 
 export const productCreateValidator = async (req, rep) => {
   try {
@@ -43,6 +43,8 @@ export const getProductByIdValidator = async (req, rep) => {
 };
 
 export const updateProductValidator = async (req, rep) => {
+  const paramSchema = z.string().regex(/^\d+$/);
+  paramSchema.parse(req.params.id);
   const updateProductSchema = z
     .object({
       vendorId: z.number().positive(),
@@ -55,13 +57,13 @@ export const updateProductValidator = async (req, rep) => {
   try {
     updateProductSchema.parse(req.body);
   } catch (error) {
-    handleValidatorError(rep, schema);
+    handleValidatorError(rep, error);
+    return;
   }
   const productResult = await checkProductName({
     name: req.body.name,
-    vendorId: req.params.id,
+    vendorId: Number(req.params.id),
   });
-  console.log("exited: ", productResult);
 
   if (productResult) {
     rep.code(400).send({ error: "同一供应商下不能有多个产品拥有相同名称" });

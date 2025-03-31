@@ -17,6 +17,5 @@ export const checkProductName = async (data) => {
       vendorId,
     },
   });
-  console.log(body, productResult, "---body---");
   return productResult;
 };

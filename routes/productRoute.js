@@ -42,9 +42,6 @@ export default (app, opts, done) => {
       {
         preHandler: [authMiddleware, updateProductValidator],
       },
-      // authValidator.auth,
-      // productValidator.update,
-      // upload.single("img"),
       updateProduct
     )
     .get(

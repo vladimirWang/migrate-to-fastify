@@ -25,8 +25,6 @@ export const authMiddleware = async (req, rep) => {
     const result = await req.jwtVerify();
     req.user = result;
   } catch (error) {
-    // rep.code(500).send(error.message);
-    console.log("--authMiddleware--: ", error.message);
-    rep.code(401).send({ error: "token失效" });
+    rep.code(401).send({ error: error.message });
   }
 };

@@ -63,3 +63,69 @@ export const userRegister = async (req, rep) => {
   //   responseError(res, err);
   // });
 };
+
+export const getCurrentUser = async (req, rep) => {
+  const userId = req.user.id;
+  if (!userId) {
+    res.status(401).json({ error: "token失效" });
+    return;
+  }
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        trolley: {
+          include: {
+            trolleyJoinProduct: true,
+          },
+        },
+      },
+    });
+    const userData = _.omit(user, [
+      "exp",
+      "iat",
+      "createAt",
+      "updateAt",
+      "trolley",
+    ]);
+
+    const trolley =
+      Array.isArray(user.trolley) && user.trolley.length
+        ? user.trolley[0]
+        : null;
+
+    rep.send(
+      getSuccessResp(
+        {
+          userInfo: userData,
+          trolleyInfo: trolley
+            ? {
+                id: trolley.id,
+                totalPrice: trolley.totalPrice,
+                trolleyJoinProduct: trolley.trolleyJoinProduct,
+              }
+            : undefined,
+        },
+        "获取当前用户信息成功"
+      )
+    );
+  } catch (error) {
+    responseError(res, error);
+  }
+};
+
+export const updateUser = async (req, rep) => {
+  const userId = req.user.id;
+  const { avatar, username, email, password } = req.body;
+  try {
+    await prisma.user.update({
+      where: { id: userId },
+      data: { avatar, username, email, password },
+    });
+
+    rep.send(getSuccessResp(null, "用户信息更新成功"));
+  } catch (error) {
+    responseError(rep, error);
+  }
+};

@@ -1,4 +1,5 @@
 @base=http://localhost:3000/api
+@token2=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJ0ZXN0MUBxcS5jb20iLCJ1c2VybmFtZSI6ImpvaG4iLCJjcmVhdGVBdCI6IjIwMjUtMDMtMzFUMDE6MzU6MzIuODkzWiIsInVwZGF0ZUF0IjoiMjAyNS0wMy0zMVQwNjowODoyNi4zMDdaIiwiYXZhdGFyIjpudWxsLCJyb2xlIjoic3RhZmYiLCJpc0RlbCI6ZmFsc2UsImZ1bGxBdmF0YXIiOm51bGwsImlhdCI6MTc0MzQwMTM1MH0.mfAhGoDajlOIV2j7n00E7DarJZSbQJO1lmmLYAmNjrg
 
 # @name login
 ### user login
@@ -6,8 +7,8 @@ POST {{base}}/user/login
 Content-Type: application/json
 
 {
-    "username": "test1",
-    "password": "1234567"
+    "username": "john",
+    "password": "123456"
 }
 ### 保存登录接口拿到的token
 @token={{login.response.body.$.data.token}}
@@ -36,11 +37,11 @@ Authorization: Bearer {{token}}
 
 ### user update
 PUT {{base}}/user
-Authorization: Bearer {{token}}
 Content-Type: application/json
+Authorization: Bearer {{token2}}
 
 {
-    "username": "1234567890"
+    "username": "john2"
 }
 
 ### user avatar
