@@ -6,6 +6,7 @@ import {
 import { signToken } from "../utils/jwt.js";
 import prisma from "../utils/prisma.js";
 import _ from "lodash";
+import { fastify } from "../app.js";
 
 export const userLogin = async (req, rep) => {
   const { password, username } = req.body;
@@ -20,11 +21,10 @@ export const userLogin = async (req, rep) => {
     });
     if (!result) {
       rep.code(402).send(getErrorResp("用户名或密码错"));
-      //   .json({ msg: "用户名或密码错" });
       return;
     }
     const user = _.omit(result, "password");
-    const token = signToken(user);
+    const token = fastify.jwt.sign(user);
     return getSuccessResp({ token }, "用户登录成功");
   } catch (error) {
     responseError(rep, error);

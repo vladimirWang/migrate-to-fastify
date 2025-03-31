@@ -1,20 +1,19 @@
-// Import the framework and instantiate it
 import Fastify from "fastify";
-// import { userLogin } from "./routes/userRoute.js";
+import fastifyJwt from "@fastify/jwt";
 import indexRoute from "./routes/indexRoute.js";
 
-const fastify = Fastify({
+const { JWT_SECRET } = process.env;
+
+export const fastify = Fastify({
   logger: true,
 });
 
-// // Declare a route
-// fastify.get("/", async function handler(request, reply) {
-//   return { hello: "world" };
-// });
+fastify.register(fastifyJwt, {
+  secret: JWT_SECRET,
+});
 
 fastify.register(indexRoute, { prefix: "/api" });
 
-// Run the server!
 try {
   await fastify.listen({ port: 3000 });
 } catch (err) {

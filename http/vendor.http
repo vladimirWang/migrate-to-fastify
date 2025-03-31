@@ -1,18 +1,39 @@
-@base=http://localhost:3000/api/vendor
-@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiI0MTMxMTQ0QHFxLmNvbSIsInVzZXJuYW1lIjoibWlrMTEyIiwiYXZhdGFyIjoiMTIzMTIiLCJjcmVhdGVBdCI6IjIwMjUtMDEtMjVUMDU6MjM6NDcuNDU4WiIsInVwZGF0ZUF0IjoiMjAyNS0wMi0wMlQyMzowOTo1Ny4wMjVaIiwiaWF0IjoxNzM4NTUwOTAyLCJleHAiOjE3Mzg2MzczMDJ9.jPCKGmaEOLe-JrITR8-whbYfoS3r-Xf1y8JOVVrCOK4
+@base=http://localhost:3000/api
 
-### brand list
-GET {{base}}
+### 登录
+# @name login
+POST {{base}}/user/login
+Content-Type: application/json
+
+{
+    "username": "test4",
+    "password": "1234567"
+}
+### 保存登录接口拿到的token
+@token={{login.response.body.$.data.token}}
+
+### 供应商列表
+GET {{base}}/vendor
 Authorization: Bearer {{token}}
 
-### create brand
-POST {{base}}
+### 新建供应商
+POST {{base}}/vendor
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 {
     "name": "polo"
 }
 
-### get data by id
-GET {{base}}/byId/1
+### 获取供应商详情
+GET {{base}}/vendor/byId/1
 Authorization: Bearer {{token}}
+
+### 获取供应商详情
+PUT {{base}}/vendor/1
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "name": "polo2"
+}
