@@ -8,7 +8,7 @@ Content-Type: application/json
 
 {
     "password": "123456",
-    "username": "test1"
+    "username": "john2"
 }
 ### 保存登录接口拿到的token
 @token={{login.response.body.$.data.token}}
