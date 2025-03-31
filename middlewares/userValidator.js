@@ -1,40 +1,54 @@
 import prisma from "../utils/prisma.js";
 import { z } from "zod";
+import { handleValidatorError } from "./helper.js";
 
 // 定义登录请求体的 Zod 校验模式
-const registerSchema = z.object({
-  email: z.string().email().min(1, { message: "Email is required" }),
-  username: z.string().min(1, { message: "Username is required" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters" })
-    .max(8, { message: "Password must be at most 8 characters" }),
-});
 
-export const loginValidator = async (req, reply) => {
-  // const {username, password}
+export const loginValidator = async (req, rep) => {
+  const loginSchema = z
+    .object({
+      username: z.string(),
+      password: z.string(),
+    })
+    .required();
+  try {
+    loginSchema.parse(req.body);
+  } catch (error) {
+    handleValidatorError(rep, error);
+  }
 };
 
-export const registerValidator = async (req, reply) => {
-  //   const { username, password } = req.body;
-  //   console.log(username, password, "--req.body");
-  //   const result = await prisma.user.findFirst({
-  //     where: { username },
-  //   });
-  //   console.log("---result---", result);
-
+export const registerValidator = async (req, rep) => {
+  const registerSchema = z.object({
+    email: z.string().email().min(1, { message: "Email is required" }),
+    username: z.string().min(1, { message: "Username is required" }),
+    password: z
+      .string()
+      .min(6, { message: "Password must be at least 6 characters" })
+      .max(8, { message: "Password must be at most 8 characters" }),
+  });
   try {
     const validatedData = registerSchema.parse(req.body);
     req.body = validatedData;
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      reply
-        .code(400)
-        .send({ error: "Validation failed", issues: error.issues });
-    } else {
-      reply.code(500).send({ error: "Internal Server Error" });
-    }
-    throw new Error("validation failed");
+    handleValidatorError(rep, error);
   }
-  //   throw new Error("fff");
+
+  const { username, email } = req.body;
+  const result = await prisma.user.findFirst({
+    where: {
+      OR: [
+        {
+          username,
+        },
+        {
+          email,
+        },
+      ],
+    },
+  });
+  console.log("用户注册校验: ", result);
+  if (result) {
+    rep.code(400).send({ error: "用户名或邮箱已存在" });
+  }
 };

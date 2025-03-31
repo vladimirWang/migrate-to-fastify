@@ -16,3 +16,8 @@ export const getErrorResp = (msg = "操作失败", code = 500) => {
 export const responseError = (res, error) => {
   res.code(500).send(getErrorResp(error.message));
 };
+
+export const getValidNumber = (numberStr) => {
+  const num = Number(numberStr);
+  return isNaN(num) ? undefined : num;
+};
