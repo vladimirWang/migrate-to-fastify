@@ -4,6 +4,7 @@ import vendorRoute from "./vendorRoute.js";
 import productRoute from "./productRoute.js";
 import fileRoute from "./fileRoute.js";
 import trolleyRoute from "./trolleyRoute.js";
+import purchaseRoute from "./purchaseRoute.js";
 
 export default (app, opts, done) => {
   app
@@ -11,6 +12,7 @@ export default (app, opts, done) => {
     .register(vendorRoute, { prefix: "/vendor" })
     .register(productRoute, { prefix: "/product" })
     .register(fileRoute, { prefix: "/file" })
-    .register(trolleyRoute, { prefix: "/trolley" });
+    .register(trolleyRoute, { prefix: "/trolley" })
+    .register(purchaseRoute, { prefix: "/import" });
   done();
 };
