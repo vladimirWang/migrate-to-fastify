@@ -1,12 +1,23 @@
-@base=http://localhost:3000/api/trolley
-@token =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOm51bGwsInVzZXJuYW1lIjoiZmVybmFuZG8iLCJjcmVhdGVBdCI6IjIwMjUtMDMtMDJUMDg6Mjc6NDkuNjI3WiIsInVwZGF0ZUF0IjoiMjAyNS0wMy0wMlQwODoyNzo0OS42MjdaIiwiYXZhdGFyIjpudWxsLCJyb2xlIjoic3RhZmYiLCJpc0RlbCI6ZmFsc2UsImlhdCI6MTc0MDk4OTA0NywiZXhwIjoxNzQxMDc1NDQ3fQ.aQIv5brAWrQ7lshQ37Q5MVPU40-5UlrpivgiehxaUCk
+@base=http://localhost:3000/api
+@token2 =eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOm51bGwsInVzZXJuYW1lIjoiZmVybmFuZG8iLCJjcmVhdGVBdCI6IjIwMjUtMDMtMDJUMDg6Mjc6NDkuNjI3WiIsInVwZGF0ZUF0IjoiMjAyNS0wMy0wMlQwODoyNzo0OS42MjdaIiwiYXZhdGFyIjpudWxsLCJyb2xlIjoic3RhZmYiLCJpc0RlbCI6ZmFsc2UsImlhdCI6MTc0MDk4OTA0NywiZXhwIjoxNzQxMDc1NDQ3fQ.aQIv5brAWrQ7lshQ37Q5MVPU40-5UlrpivgiehxaUCk
+
+# @name login
+POST {{base}}/user/login
+Content-Type: application/json
+
+{
+    "username": "test4",
+    "password": "123456"
+}
+### 保存登录接口拿到的token
+@token={{login.response.body.$.data.token}}
 
 ### user list
-GET {{base}}?limit=10&page=1&name=beer
+GET {{base}}/trolley?limit=10&page=1&name=beer
 Authorization: Bearer {{token}}
 
 ### create trolley
-POST {{base}}
+POST {{base}}/trolley
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -17,7 +28,7 @@ Content-Type: application/json
 }
 
 ### update trolley 添加新的商品
-PUT {{base}}/8
+PUT {{base}}/trolley/8
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -30,7 +41,7 @@ Content-Type: application/json
 
 
 ### update trolley 修改已有商品的数量
-PUT {{base}}/8
+PUT {{base}}/trolley/8
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -42,7 +53,7 @@ Content-Type: application/json
 }
 
 ### update trolley 删除已存在的商品
-PUT {{base}}/8
+PUT {{base}}/trolley/8
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -54,11 +65,11 @@ Content-Type: application/json
 }
 
 ### get trolleyDetail
-GET {{base}}
+GET {{base}}/trolley
 Authorization: Bearer {{token}}
 
 
 ### delete trolleyDetail
-DELETE {{base}}/6?productId=1
+DELETE {{base}}/trolley/6?productId=1
 Authorization: Bearer {{token}}
 
