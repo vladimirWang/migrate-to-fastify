@@ -288,7 +288,7 @@ export const revokePurchase = async (req, res) => {
         importProductIds.map((item) => {
           return tx.productJoinPurchase.delete({
             where: {
-              productId_importId: {
+              productId_purchaseId: {
                 purchaseId,
                 productId: item,
               },
