@@ -7,7 +7,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum ImportStatus {
+enum PurchaseStatus {
   WAITING
   FINISHED
 }
@@ -32,7 +32,7 @@ model Purchase {
   updatedAt           DateTime              @updatedAt
   purchaseDate        DateTime              @db.Date
   totalCost           Int? // 总价
-  importStatus        ImportStatus          @default(WAITING) // 进货订单状态
+  purchaseStatus      PurchaseStatus        @default(WAITING) // 进货订单状态
   productJoinPurchase ProductJoinPurchase[]
   userId              Int
   user                User                  @relation(fields: [userId], references: [id])
@@ -40,52 +40,52 @@ model Purchase {
 }
 
 model Product {
-  id                   Int                    @id @default(autoincrement())
-  name                 String
-  img                  String?
-  vendorId             Int
-  remark               String?
-  balance              Int?                   @default(0) @db.UnsignedSmallInt
-  isDel                Boolean                @default(false)
-  createAt             DateTime               @default(now())
-  updateAt             DateTime               @updatedAt
-  price                Int?                   @db.UnsignedSmallInt // 最新售价
-  cost                 Int?                   @db.UnsignedSmallInt // 最新成本价
-  vendor               Vendor                 @relation(fields: [vendorId], references: [id])
-  imports              ProductJoinPurchase[]
-  trolleyJoinProduct   TrolleyJoinProduct[] // 采购车中间表
-  exportProduct        ExportProduct[] // 出货商品中间表
-  exportTrolleyProduct ExportTrolleyProduct[]
+  id                     Int                      @id @default(autoincrement())
+  name                   String
+  img                    String?
+  vendorId               Int
+  remark                 String?
+  balance                Int?                     @default(0) @db.UnsignedSmallInt
+  isDel                  Boolean                  @default(false)
+  createAt               DateTime                 @default(now())
+  updateAt               DateTime                 @updatedAt
+  price                  Int?                     @db.UnsignedSmallInt // 最新售价
+  cost                   Int?                     @db.UnsignedSmallInt // 最新成本价
+  vendor                 Vendor                   @relation(fields: [vendorId], references: [id])
+  productJoinPurchase    ProductJoinPurchase[]
+  trolleyJoinProduct     TrolleyJoinProduct[] // 采购车中间表
+  saleJoinProduct        SaleJoinProduct[] // 出货商品中间表
+  saleTrolleyJoinProduct SaleTrolleyJoinProduct[]
 
   @@index([vendorId], map: "Product_brandId_fkey")
 }
 
 model User {
-  id            Int             @id @default(autoincrement())
-  email         String?         @unique
-  username      String
-  createAt      DateTime        @default(now())
-  updateAt      DateTime        @updatedAt
-  password      String
-  avatar        String?
-  role          String          @default("staff")
-  isDel         Boolean         @default(false)
-  trolley       Trolley[]
-  import        Purchase[]
-  export        Export[]
-  exportTrolley ExportTrolley[]
+  id          Int           @id @default(autoincrement())
+  email       String?       @unique
+  username    String
+  createAt    DateTime      @default(now())
+  updateAt    DateTime      @updatedAt
+  password    String
+  avatar      String?
+  role        String        @default("staff")
+  isDel       Boolean       @default(false)
+  trolley     Trolley[]
+  purchase    Purchase[]
+  sale        Sale[]
+  saleTrolley SaleTrolley[]
 }
 
 model ProductJoinPurchase {
-  productId Int
-  product   Product  @relation(fields: [productId], references: [id])
-  importId  Int
-  import    Purchase @relation(fields: [importId], references: [id])
+  productId  Int
+  product    Product  @relation(fields: [productId], references: [id])
+  purchaseId Int
+  purchase   Purchase @relation(fields: [purchaseId], references: [id])
 
   cost  Int @db.UnsignedSmallInt // 最新成本价
   count Int @db.UnsignedSmallInt // 商品数量
 
-  @@id([productId, importId])
+  @@id([productId, purchaseId])
 }
 
 model Trolley {
@@ -109,85 +109,98 @@ model TrolleyJoinProduct {
   @@id([trolleyId, productId])
 }
 
-enum Platform {
-  XIANYU // 闲鱼
-  PINDUODUO // 拼多多
-  TAOBAO // 淘宝
-  DOUYIN // 抖音
-  OTHER
-}
-
-enum ExportStatus {
+enum SaleStatus {
   PENDING // 商家处理中
   DELIVERY // 运输中
   FINISHED // 已完成
 }
 
-enum Express {
-  SHUNFENG // 顺丰  
-  ZHONGTONG // 中通
-  SHENTONG // 申通
-  YUNDA // 韵达
-  OTHER // 其他
+model SaleTrolley {
+  id                     Int                      @id @default(autoincrement())
+  saleTrolleyJoinProduct SaleTrolleyJoinProduct[]
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  createdUserId          Int
+  createdUser            User                     @relation(fields: [createdUserId], references: [id])
 }
 
-model ExportTrolley {
-  id                   Int                    @id @default(autoincrement())
-  exportTrolleyProduct ExportTrolleyProduct[]
-  createdAt            DateTime               @default(now())
-  updatedAt            DateTime               @updatedAt
-  createdUserId        Int
-  createdUser          User                   @relation(fields: [createdUserId], references: [id])
-}
+model SaleTrolleyJoinProduct {
+  productId     Int
+  product       Product     @relation(fields: [productId], references: [id])
+  count         Int         @db.UnsignedSmallInt // 某个sku的采购数量
+  price         Int         @default(0) @db.UnsignedSmallInt // 成本价
+  saleTrolley   SaleTrolley @relation(fields: [saleTrolleyId], references: [id])
+  saleTrolleyId Int
 
-model ExportTrolleyProduct {
-  productId       Int
-  product         Product       @relation(fields: [productId], references: [id])
-  count           Int           @db.UnsignedSmallInt // 某个sku的采购数量
-  price           Int           @default(0) @db.UnsignedSmallInt // 成本价
-  exportTrolley   ExportTrolley @relation(fields: [exportTrolleyId], references: [id])
-  exportTrolleyId Int
-
-  @@id([exportTrolleyId, productId])
+  @@id([saleTrolleyId, productId])
 }
 
 // 出货表
-model Export {
-  id              Int             @id @default(autoincrement())
-  totalPrice      Int             @db.UnsignedSmallInt
-  purchaseDate    DateTime?       @db.Date // 购买日期
-  confirmDate     DateTime?       @db.Date // 确认收货日期
-  platform        Platform?
+model Sale {
+  id              Int               @id @default(autoincrement())
+  totalPrice      Int               @db.UnsignedSmallInt
+  purchaseDate    DateTime?         @db.Date // 购买日期
+  confirmDate     DateTime?         @db.Date // 确认收货日期
+  platformId      Int
+  platform        Platform          @relation(fields: [platformId], references: [id])
   platformOrderNo String? // 平台订单号
   clientId        Int?
-  client          Client?         @relation(fields: [clientId], references: [id])
+  client          Client?           @relation(fields: [clientId], references: [id])
   remark          String?
-  status          ExportStatus    @default(PENDING)
-  exportProduct   ExportProduct[]
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
+  status          SaleStatus        @default(PENDING)
+  saleJoinProduct SaleJoinProduct[]
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
   createdUserId   Int
-  createdUser     User            @relation(fields: [createdUserId], references: [id])
-  express         Express? // 快递公司
+  createdUser     User              @relation(fields: [createdUserId], references: [id])
+  expressId       Int?
+  express         Express?          @relation(fields: [expressId], references: [id]) // 快递公司
   expressNo       String? // 快递单号
-  expressFee      Int?            @db.TinyInt
+  expressFee      Int?              @db.TinyInt
 }
 
-model ExportProduct {
-  exportId  Int
-  export    Export  @relation(fields: [exportId], references: [id])
+model SaleJoinProduct {
+  saleId    Int
+  sale      Sale    @relation(fields: [saleId], references: [id])
   productId Int
   product   Product @relation(fields: [productId], references: [id])
   price     Int     @db.UnsignedSmallInt // 成交价
   count     Int     @db.UnsignedSmallInt // 数量
 
-  @@id([exportId, productId])
+  @@id([saleId, productId])
 }
 
 model Client {
-  id     Int      @id @default(autoincrement())
-  name   String   @db.VarChar(10)
+  id     Int     @id @default(autoincrement())
+  name   String  @db.VarChar(10)
   remark String?
-  badGuy Boolean  @default(false) // 是否恶意退单用户
-  Export Export[]
+  badGuy Boolean @default(false) // 是否恶意退单用户
+  sale   Sale[]
+}
+
+// enum PlatformName {
+//   XIANYU // 闲鱼
+//   PINDUODUO // 拼多多
+//   TAOBAO // 淘宝
+//   DOUYIN // 抖音
+// }
+
+model Platform {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(20)
+  sale Sale[]
+}
+
+// enum Express {
+//   SHUNFENG // 顺丰  
+//   ZHONGTONG // 中通
+//   SHENTONG // 申通
+//   YUNDA // 韵达
+//   OTHER // 其他
+// }
+
+model Express {
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(20)
+  sale Sale[]
 }

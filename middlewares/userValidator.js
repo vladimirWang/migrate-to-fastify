@@ -20,7 +20,7 @@ export const loginValidator = async (req, rep) => {
 
 export const registerValidator = async (req, rep) => {
   const registerSchema = z.object({
-    email: z.string().email().min(1, { message: "Email is required" }),
+    // email: z.string().email().min(1, { message: "Email is required" }),
     username: z.string().min(1, { message: "Username is required" }),
     password: z
       .string()
@@ -41,9 +41,9 @@ export const registerValidator = async (req, rep) => {
         {
           username,
         },
-        {
-          email,
-        },
+        // {
+        //   email,
+        // },
       ],
     },
   });

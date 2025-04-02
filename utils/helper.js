@@ -1,3 +1,9 @@
+import _ from "lodash";
+
+export function trueType(obj) {
+  return Object.prototype.toString.call(obj).slice(8, -1);
+}
+
 export const getSuccessResp = (data, msg = "操作成功") => {
   return {
     code: 200,
@@ -79,4 +85,12 @@ export const getNewTotalValue = (values) => {
 
     resolve(newTotalValue);
   });
+};
+
+// 比较两个对象键值对，返回obj1的键值对
+export const diffObject = (obj1, obj2) => {
+  if (trueType(obj1) !== "Object" || trueType(obj2) !== "Object") {
+    throw new Error("diffObject方法的两个参数都应为对象");
+  }
+  return _.pickBy(obj1, (value, key) => !_.isEqual(value, obj2[key]));
 };

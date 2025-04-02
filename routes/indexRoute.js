@@ -6,6 +6,8 @@ import fileRoute from "./fileRoute.js";
 import trolleyRoute from "./trolleyRoute.js";
 import purchaseRoute from "./purchaseRoute.js";
 import saleTrolleyRoute from "./saleTrolleyRoute.js";
+import platformRoute from "./platformRoute.js";
+import expressRoute from "./expressRoute.js";
 
 export default (app, opts, done) => {
   app
@@ -15,6 +17,9 @@ export default (app, opts, done) => {
     .register(fileRoute, { prefix: "/file" })
     .register(trolleyRoute, { prefix: "/trolley" })
     .register(purchaseRoute, { prefix: "/import" })
-    .register(saleTrolleyRoute, { prefix: "/exportTrolley" });
+    .register(saleTrolleyRoute, { prefix: "/exportTrolley" })
+    .register(platformRoute, { prefix: "/platform" })
+    .register(expressRoute, { prefix: "/express" });
+
   done();
 };

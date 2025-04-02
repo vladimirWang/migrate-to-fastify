@@ -40,7 +40,7 @@ export const userLogin = async (req, rep) => {
 
 export const userRegister = async (req, rep) => {
   // 对密码解密
-  const { username, password, email } = req.body;
+  const { username, password } = req.body;
   // const decodedPassword = decrypt(password);
   console.log("解密前: ", password);
   // console.log("解密后: ", decodedPassword);
@@ -50,7 +50,7 @@ export const userRegister = async (req, rep) => {
       // password: decodedPassword,
       password,
       username,
-      email,
+      // email,
     },
   });
 
@@ -67,7 +67,7 @@ export const userRegister = async (req, rep) => {
 export const getCurrentUser = async (req, rep) => {
   const userId = req.user.id;
   if (!userId) {
-    res.status(401).json({ error: "token失效" });
+    rep.code(401).send({ error: "token失效" });
     return;
   }
 
@@ -82,6 +82,10 @@ export const getCurrentUser = async (req, rep) => {
         },
       },
     });
+    if (!user) {
+      rep.code(404).send(getErrorResp("没有查询到用户"));
+      return;
+    }
     const userData = _.omit(user, [
       "exp",
       "iat",
@@ -111,7 +115,7 @@ export const getCurrentUser = async (req, rep) => {
       )
     );
   } catch (error) {
-    responseError(res, error);
+    responseError(rep, error);
   }
 };
 

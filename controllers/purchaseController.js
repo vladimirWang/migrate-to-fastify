@@ -189,7 +189,7 @@ export const confirmPurchase = async (req, res) => {
     const { confirmDate } = req.body;
 
     const productJoinImport = await prisma.productJoinPurchase.findMany({
-      where: { importId: id },
+      where: { purchaseId: id },
       select: {
         productId: true,
         count: true,
@@ -203,7 +203,7 @@ export const confirmPurchase = async (req, res) => {
         data: {
           // confirmDate: new Date(confirmDate),
           confirmDate,
-          importStatus: "FINISHED",
+          purchaseStatus: "FINISHED",
         },
       }),
 
@@ -233,11 +233,11 @@ export const confirmPurchase = async (req, res) => {
 export const revokePurchase = async (req, res) => {
   try {
     const userId = req.user.id;
-    const { importId, trolleyId } = req.body;
+    const { purchaseId, trolleyId } = req.body;
     // 当前进货单下的商品
     const curProductsInImport = await prisma.productJoinPurchase.findMany({
       where: {
-        importId,
+        purchaseId,
       },
     });
     // 当前采购车中的商品
@@ -289,7 +289,7 @@ export const revokePurchase = async (req, res) => {
           return tx.productJoinPurchase.delete({
             where: {
               productId_importId: {
-                importId,
+                purchaseId,
                 productId: item,
               },
             },
@@ -299,7 +299,7 @@ export const revokePurchase = async (req, res) => {
       // step2 把待确认的进货单删除，
       await tx.purchase.delete({
         where: {
-          id: importId,
+          id: purchaseId,
         },
       });
       if (trolleyId) {

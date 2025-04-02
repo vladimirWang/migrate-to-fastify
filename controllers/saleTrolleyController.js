@@ -11,10 +11,10 @@ export const createExportTrolley = async (req, res) => {
   const { price, count, productId } = req.body;
 
   try {
-    const result = await prisma.exportTrolley.create({
+    const result = await prisma.saleTrolley.create({
       data: {
         createdUser: { connect: { id: userId } },
-        exportTrolleyProduct: {
+        saleTrolleyJoinProduct: {
           create: [
             {
               count,
@@ -37,9 +37,9 @@ export const createExportTrolley = async (req, res) => {
 
 export const exportTrolleyList = async (req, res) => {
   try {
-    const list = await prisma.exportTrolley.findMany({
+    const list = await prisma.saleTrolley.findMany({
       include: {
-        exportTrolleyProduct: {
+        saleTrolleyJoinProduct: {
           include: {
             product: true,
           },
@@ -49,7 +49,7 @@ export const exportTrolleyList = async (req, res) => {
       //   id: true,
       // },
     });
-    const total = await prisma.exportTrolley.count();
+    const total = await prisma.saleTrolley.count();
     res.send(getSuccessResp({ list, total }, "出货列表获取成功"));
   } catch (error) {
     responseError(res, error);
@@ -59,12 +59,12 @@ export const exportTrolleyList = async (req, res) => {
 export const getExportTrolleyDetailById = async (req, res) => {
   try {
     const id = req.params.id;
-    const result = await prisma.exportTrolley.findUnique({
+    const result = await prisma.saleTrolley.findUnique({
       where: {
         id: Number(id),
       },
       include: {
-        exportTrolleyProduct: {
+        saleTrolleyJoinProduct: {
           include: {
             product: {
               include: {
@@ -75,13 +75,13 @@ export const getExportTrolleyDetailById = async (req, res) => {
         },
       },
     });
-    const { exportTrolleyProduct, ...rest } = result;
-    const grouped = generateGroupsByVendorId(exportTrolleyProduct);
+    const { saleTrolleyJoinProduct, ...rest } = result;
+    const grouped = generateGroupsByVendorId(saleTrolleyJoinProduct);
 
     // { ...rest, exportProduct: grouped }
     res.send(
       getSuccessResp(
-        { ...rest, exportTrolleyProduct: grouped },
+        { ...rest, saleTrolleyJoinProduct: grouped },
         "出货单详情获取正常"
       )
     );
@@ -92,15 +92,16 @@ export const getExportTrolleyDetailById = async (req, res) => {
 
 export const updateExportTrolley = async (req, res) => {
   try {
-    const { productId, operation, increment, count, price } = req.body;
+    const { productId, operation, increment, count, price, deleteTrolley } =
+      req.body;
 
-    const exportTrolleyId = Number(req.params.id);
+    const saleTrolleyId = Number(req.params.id);
 
     const result = await prisma.$transaction([
       // // 修改出货单总价
       // prisma.ExportTrolley.update({
       //   where: {
-      //     id: exportTrolleyId,
+      //     id: saleTrolleyId,
       //   },
       //   data: {
       //     totalPrice: {
@@ -111,9 +112,9 @@ export const updateExportTrolley = async (req, res) => {
       // 修改中间表数量
       ...(operation === "create"
         ? [
-            prisma.exportTrolleyProduct.create({
+            prisma.saleTrolleyJoinProduct.create({
               data: {
-                export: { connect: { id: exportTrolleyId } },
+                export: { connect: { id: saleTrolleyId } },
                 product: { connect: { id: productId } },
                 count,
                 price,
@@ -123,10 +124,10 @@ export const updateExportTrolley = async (req, res) => {
         : []),
       ...(operation === "update"
         ? [
-            prisma.exportTrolleyProduct.update({
+            prisma.saleTrolleyJoinProduct.update({
               where: {
-                exportTrolleyId_productId: {
-                  exportTrolleyId,
+                saleTrolleyId_productId: {
+                  saleTrolleyId,
                   productId,
                 },
               },
@@ -140,12 +141,21 @@ export const updateExportTrolley = async (req, res) => {
         : []),
       ...(operation === "delete"
         ? [
-            prisma.exportTrolleyProduct.delete({
+            prisma.saleTrolleyJoinProduct.delete({
               where: {
-                exportTrolleyId_productId: {
-                  exportTrolleyId,
+                saleTrolleyId_productId: {
+                  saleTrolleyId,
                   productId,
                 },
+              },
+            }),
+          ]
+        : []),
+      ...(operation === "delete" && deleteTrolley
+        ? [
+            prisma.saleTrolley.delete({
+              where: {
+                id: saleTrolleyId,
               },
             }),
           ]
@@ -159,11 +169,11 @@ export const updateExportTrolley = async (req, res) => {
 
 export const updateExportTrolleyBatch = async (req, res) => {
   try {
-    const exportTrolleyId = Number(req.params.id);
+    const saleTrolleyId = Number(req.params.id);
     const { checked } = req.body;
-    const existed = await prisma.exportTrolleyProduct.findMany({
+    const existed = await prisma.saleTrolleyJoinProduct.findMany({
       where: {
-        exportTrolleyId,
+        saleTrolleyId,
       },
     });
 
@@ -179,9 +189,9 @@ export const updateExportTrolleyBatch = async (req, res) => {
     await prisma.$transaction([
       // 原本不存在的商品，插入新数据
       ...newProducts.map((product) => {
-        return prisma.exportTrolleyProduct.create({
+        return prisma.saleTrolleyJoinProduct.create({
           data: {
-            exportTrolleyId,
+            saleTrolleyId,
             productId: product.id,
             count: 1,
             price: product.price,
@@ -190,10 +200,10 @@ export const updateExportTrolleyBatch = async (req, res) => {
       }),
       // 选中的商品原本已存在，在老的基础上增加
       ...updatedIds.map((id) => {
-        return prisma.exportTrolleyProduct.update({
+        return prisma.saleTrolleyJoinProduct.update({
           where: {
-            exportTrolleyId_productId: {
-              exportTrolleyId,
+            saleTrolleyId_productId: {
+              saleTrolleyId,
               productId: id,
             },
           },

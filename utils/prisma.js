@@ -53,15 +53,15 @@ const extensions = {
     },
   },
 };
-let prismaClient;
+let prisma;
 
 if (process.env.NODE_ENV === "development") {
-  prismaClient = new PrismaClient(options).$extends(extensions);
+  prisma = new PrismaClient(options).$extends(extensions);
 } else {
   if (!global.cachedPrisma) {
     global.cachedPrisma = new PrismaClient(options).$extends(extensions);
   }
-  prismaClient = global.cachedPrisma;
+  prisma = global.cachedPrisma;
 }
 
-export default prismaClient;
+export default prisma;

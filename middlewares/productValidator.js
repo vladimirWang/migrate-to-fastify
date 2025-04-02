@@ -60,12 +60,14 @@ export const updateProductValidator = async (req, rep) => {
     handleValidatorError(rep, error);
     return;
   }
-  const productResult = await checkProductName({
-    name: req.body.name,
-    vendorId: Number(req.params.id),
-  });
+  if (req.body.name !== undefined) {
+    const productResult = await checkProductName({
+      name: req.body.name,
+      vendorId: Number(req.params.id),
+    });
 
-  if (productResult) {
-    rep.code(400).send({ error: "同一供应商下不能有多个产品拥有相同名称" });
+    if (productResult) {
+      rep.code(400).send({ error: "同一供应商下不能有多个产品拥有相同名称" });
+    }
   }
 };
