@@ -13,14 +13,14 @@ enum PurchaseStatus {
 }
 
 model Vendor {
-  id       Int       @id @default(autoincrement())
-  name     String    @unique
-  isDel    Boolean   @default(false)
-  remark   String?
-  createAt DateTime  @default(now())
-  updateAt DateTime  @updatedAt
-  img      String?
-  products Product[]
+  id        Int       @id @default(autoincrement())
+  name      String    @unique
+  isDel     Boolean   @default(false)
+  remark    String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  img       String?
+  products  Product[]
 }
 
 // 进货表
@@ -47,8 +47,8 @@ model Product {
   remark                 String?
   balance                Int?                     @default(0) @db.UnsignedSmallInt
   isDel                  Boolean                  @default(false)
-  createAt               DateTime                 @default(now())
-  updateAt               DateTime                 @updatedAt
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
   price                  Int?                     @db.UnsignedSmallInt // 最新售价
   cost                   Int?                     @db.UnsignedSmallInt // 最新成本价
   vendor                 Vendor                   @relation(fields: [vendorId], references: [id])
@@ -64,8 +64,8 @@ model User {
   id          Int           @id @default(autoincrement())
   email       String?       @unique
   username    String
-  createAt    DateTime      @default(now())
-  updateAt    DateTime      @updatedAt
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
   password    String
   avatar      String?
   role        String        @default("staff")
@@ -91,8 +91,8 @@ model ProductJoinPurchase {
 model Trolley {
   id                 Int                  @id @default(autoincrement())
   trolleyJoinProduct TrolleyJoinProduct[]
-  createAt           DateTime             @default(now())
-  updateAt           DateTime             @updatedAt
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
   remark             String?
   userId             Int                  @unique
   user               User                 @relation(fields: [userId], references: [id])
