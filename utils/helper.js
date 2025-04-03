@@ -94,3 +94,33 @@ export const diffObject = (obj1, obj2) => {
   }
   return _.pickBy(obj1, (value, key) => !_.isEqual(value, obj2[key]));
 };
+
+// 实现两数相加
+export const sum = (value1, value2) => {
+  // 获取第一个输入框的值，并转换为数字类型
+  const num1 = parseFloat(value1);
+  // 获取第二个输入框的值，并转换为数字类型
+  const num2 = parseFloat(value2);
+
+  // 检查输入是否为有效的数字
+  if (!isNaN(num1) && !isNaN(num2)) {
+    // 计算两个数的小数位数
+    const decimalPlaces1 = (num1.toString().split(".")[1] || "").length;
+    const decimalPlaces2 = (num2.toString().split(".")[1] || "").length;
+
+    // 取最大的小数位数
+    const maxDecimalPlaces = Math.max(decimalPlaces1, decimalPlaces2);
+    // 将小数转换为整数进行计算
+    const multiplier = Math.pow(10, maxDecimalPlaces);
+
+    const sum = (num1 * multiplier + num2 * multiplier) / multiplier;
+    // 使用 toFixed() 方法控制结果的小数位数
+    const formattedSum = sum.toFixed(maxDecimalPlaces);
+
+    // 将结果显示在页面上
+    return parseFloat(formattedSum);
+  } else {
+    // 如果输入无效，显示错误信息
+    throw new Error("输入的数据不是有效数字");
+  }
+};

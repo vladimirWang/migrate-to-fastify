@@ -3,7 +3,7 @@ import { PrismaClient } from "@prisma/client";
 const { DATABASE_URL, HOST } = process.env;
 
 const options = {
-  log: ["info", "error"],
+  log: ["warn", "error"],
   datasources: {
     db: {
       url: DATABASE_URL,

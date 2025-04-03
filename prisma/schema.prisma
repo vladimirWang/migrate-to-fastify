@@ -129,7 +129,7 @@ model SaleTrolleyJoinProduct {
   product       Product     @relation(fields: [productId], references: [id])
   count         Int         @db.UnsignedSmallInt // 某个sku的采购数量
   price         Int         @default(0) @db.UnsignedSmallInt // 成本价
-  saleTrolley   SaleTrolley @relation(fields: [saleTrolleyId], references: [id])
+  saleTrolley   SaleTrolley @relation(fields: [saleTrolleyId], references: [id], onDelete: Cascade)
   saleTrolleyId Int
 
   @@id([saleTrolleyId, productId])

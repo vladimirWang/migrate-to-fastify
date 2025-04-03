@@ -8,6 +8,7 @@ import purchaseRoute from "./purchaseRoute.js";
 import saleTrolleyRoute from "./saleTrolleyRoute.js";
 import platformRoute from "./platformRoute.js";
 import expressRoute from "./expressRoute.js";
+import saleRoute from "./saleRoute.js";
 
 export default (app, opts, done) => {
   app
@@ -19,7 +20,8 @@ export default (app, opts, done) => {
     .register(purchaseRoute, { prefix: "/import" })
     .register(saleTrolleyRoute, { prefix: "/exportTrolley" })
     .register(platformRoute, { prefix: "/platform" })
-    .register(expressRoute, { prefix: "/express" });
+    .register(expressRoute, { prefix: "/express" })
+    .register(saleRoute, { prefix: "/export" });
 
   done();
 };
