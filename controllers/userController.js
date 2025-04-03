@@ -89,8 +89,8 @@ export const getCurrentUser = async (req, rep) => {
     const userData = _.omit(user, [
       "exp",
       "iat",
-      "createAt",
-      "updateAt",
+      "createdAt",
+      "updatedAt",
       "trolley",
     ]);
 
