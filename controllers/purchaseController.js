@@ -283,20 +283,21 @@ export const revokePurchase = async (req, res) => {
     // });
 
     await prisma.$transaction(async (tx) => {
-      // step1 删除中间表数据
-      await Promise.all(
-        importProductIds.map((item) => {
-          return tx.productJoinPurchase.delete({
-            where: {
-              productId_purchaseId: {
-                purchaseId,
-                productId: item,
-              },
-            },
-          });
-        })
-      );
+      // // step1 删除中间表数据
+      // await Promise.all(
+      //   importProductIds.map((item) => {
+      //     return tx.productJoinPurchase.delete({
+      //       where: {
+      //         productId_purchaseId: {
+      //           purchaseId,
+      //           productId: item,
+      //         },
+      //       },
+      //     });
+      //   })
+      // );
       // step2 把待确认的进货单删除，
+      // 中间表的数据会联动删除
       await tx.purchase.delete({
         where: {
           id: purchaseId,
@@ -325,7 +326,7 @@ export const revokePurchase = async (req, res) => {
         // step3-2 对不存在的商品插入数据
         await Promise.all(
           newComingData.map((item) => {
-            return prisma.TrolleyJoinProduct.create({
+            return prisma.trolleyJoinProduct.create({
               data: {
                 trolleyId,
                 productId: item.productId,
