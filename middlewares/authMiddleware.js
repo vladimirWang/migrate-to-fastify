@@ -20,7 +20,12 @@
 //   }
 // };
 
+const exclude = ["/api/user/login", "/api/user/register"];
 export const authMiddleware = async (req, rep) => {
+  if (exclude.includes(req.url)) {
+    return;
+  }
+
   try {
     const result = await req.jwtVerify();
     req.user = result;

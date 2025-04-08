@@ -5,6 +5,7 @@ import indexRoute from "./routes/indexRoute.js";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 import fastifyStatic from "@fastify/static";
+import { authMiddleware } from "./middlewares/authMiddleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,9 +27,10 @@ fastify.register(fastifyJwt, {
   secret: JWT_SECRET,
 });
 
-fastify.register(fastifyMultipart);
-
-fastify.register(indexRoute, { prefix: "/api" });
+fastify
+  .register(fastifyMultipart)
+  .addHook("preHandler", authMiddleware)
+  .register(indexRoute, { prefix: "/api" });
 
 try {
   await fastify.listen({ port: 3000 });

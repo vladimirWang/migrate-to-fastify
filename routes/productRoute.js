@@ -18,44 +18,38 @@ import {
 // const { upload } = require("../util/index");
 // const router = Router();
 
-import { authMiddleware } from "../middlewares/authMiddleware.js";
-
 export default (app, opts, done) => {
   app
     .post(
       "/",
       {
-        preHandler: [authMiddleware, productCreateValidator],
+        preHandler: [productCreateValidator],
       },
       createProduct
     )
-    .get("/", { preHandler: authMiddleware }, productList)
+    .get("/", productList)
     .get(
       "/getProductById/:id",
       {
-        preHandler: [authMiddleware, getProductByIdValidator],
+        preHandler: [getProductByIdValidator],
       },
       getProductById
     )
     .put(
       "/updateProductById/:id",
       {
-        preHandler: [authMiddleware, updateProductValidator],
+        preHandler: [updateProductValidator],
       },
       updateProduct
     )
     .get(
       "/productTopCount",
-      {
-        preHandler: authMiddleware,
-      },
+
       getProductTopCount
     )
     .get(
       "/topValueProduct",
-      {
-        preHandler: authMiddleware,
-      },
+
       getTopValueProduct
     );
   done();

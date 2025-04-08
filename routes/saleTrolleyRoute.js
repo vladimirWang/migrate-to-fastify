@@ -9,14 +9,10 @@ import {
 
 export default (app, opts, done) => {
   app
-    .post("/", { preHandler: authMiddleware }, createExportTrolley)
-    .get("/", { preHandler: authMiddleware }, exportTrolleyList)
-    .get("/:id", { preHandler: authMiddleware }, getExportTrolleyDetailById)
-    .put("/:id", { preHandler: authMiddleware }, updateExportTrolley)
-    .put(
-      "/batch/:id",
-      { preHandler: authMiddleware },
-      updateExportTrolleyBatch
-    );
+    .post("/", createExportTrolley)
+    .get("/", exportTrolleyList)
+    .get("/:id", getExportTrolleyDetailById)
+    .put("/:id", updateExportTrolley)
+    .put("/batch/:id", updateExportTrolleyBatch);
   done();
 };

@@ -10,15 +10,11 @@ import {
 
 export default (app, opts, done) => {
   app
-    .post("/", { preHandler: authMiddleware }, createPurchase)
-    .get("/", { preHandler: authMiddleware }, getGroupedImports)
-    .post("/batch", { preHandler: authMiddleware }, batchCreateImport)
-    .get(
-      "/getImportDetail/:id",
-      { preHandler: authMiddleware },
-      getImportDetail
-    )
-    .post("/confirm/:id", { preHandler: authMiddleware }, confirmPurchase)
-    .post("/revoke", { preHandler: authMiddleware }, revokePurchase);
+    .post("/", createPurchase)
+    .get("/", getGroupedImports)
+    .post("/batch", batchCreateImport)
+    .get("/getImportDetail/:id", getImportDetail)
+    .post("/confirm/:id", confirmPurchase)
+    .post("/revoke", revokePurchase);
   done();
 };

@@ -9,14 +9,10 @@ import {
 
 export default (app, opts, done) => {
   app
-    .post("/", { preHandler: authMiddleware }, createTrolley)
-    .put("/:id", { preHandler: authMiddleware }, updateTrolley)
-    .get("/", { preHandler: authMiddleware }, getCurrentUserTrolleyDetail)
-    .get(
-      "/:id/:productId",
-      { preHandler: authMiddleware },
-      productIsExistedInTrolley
-    )
-    .delete("/:id", { preHandler: authMiddleware }, deleteTrolleyById);
+    .post("/", createTrolley)
+    .put("/:id", updateTrolley)
+    .get("/", getCurrentUserTrolleyDetail)
+    .get("/:id/:productId", productIsExistedInTrolley)
+    .delete("/:id", deleteTrolleyById);
   done();
 };

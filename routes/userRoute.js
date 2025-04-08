@@ -13,7 +13,7 @@ export default (app, opts, done) => {
   app
     .post("/login", { preHandler: loginValidator }, userLogin)
     .post("/register", { preHandler: registerValidator }, userRegister)
-    .get("/current", { preHandler: authMiddleware }, getCurrentUser)
-    .put("/", { preHandler: authMiddleware }, updateUser);
+    .get("/current", getCurrentUser)
+    .put("/", updateUser);
   done();
 };
