@@ -64,4 +64,8 @@ if (process.env.NODE_ENV === "development") {
   prisma = global.cachedPrisma;
 }
 
+prisma.$connect().then((res) => {
+  console.log("connect success");
+});
+
 export default prisma;
