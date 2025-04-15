@@ -11,8 +11,12 @@ Content-Type: application/json
 ### 保存登录接口拿到的token
 @token={{login.response.body.$.data.token}}
 
+### 查询销售订单列表
+GET {{base}}/saleOrder
+Authorization: Bearer {{token}}
+
 ### 生成出货单
-POST {{base}}/export
+POST {{base}}/saleOrder
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
@@ -41,14 +45,27 @@ Content-Type: application/json
 }
 
 ### 出货列表详情
-GET {{base}}/export/2
+GET {{base}}/saleOrder/1
 Authorization: Bearer {{token}}
 
 ### 修改出货单商品数量
-PUT {{base}}/export/1
+PUT {{base}}/saleOrder/1
 Authorization: Bearer {{token}}
 Content-Type: application/json
 
 {
     "productId": 4
+}
+
+### 补充出货单的辅助信息
+PATCH {{base}}/saleOrder/updateAuxiliaryInfo/4
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+    "expressFee": 10,
+    "expressId": 1,
+    "expressNo": "yd001",
+    "platformId": 2,
+    "platformOrderNo": "pdd001"
 }

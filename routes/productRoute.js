@@ -10,6 +10,7 @@ import {
   updateProduct,
   getProductTopCount,
   getTopValueProduct,
+  updateAvailableById,
 } from "../controllers/productController.js";
 // const Router = require("express").Router;
 // const productCtrl = require("../controller/product");
@@ -42,15 +43,8 @@ export default (app, opts, done) => {
       },
       updateProduct
     )
-    .get(
-      "/productTopCount",
-
-      getProductTopCount
-    )
-    .get(
-      "/topValueProduct",
-
-      getTopValueProduct
-    );
+    .get("/productTopCount", getProductTopCount)
+    .get("/topValueProduct", getTopValueProduct)
+    .patch("/toggleAvailable/:id", updateAvailableById);
   done();
 };

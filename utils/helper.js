@@ -124,3 +124,34 @@ export const sum = (value1, value2) => {
     throw new Error("输入的数据不是有效数字");
   }
 };
+
+// 对采购车按供应商分组
+export function groupsByVendorId(data) {
+  const obj = data.reduce((a, c) => {
+    const vendorId = c.vendor.id;
+
+    if (a[vendorId]) {
+      a[vendorId] = {
+        ...a[vendorId],
+        children: a[vendorId].children.concat(c),
+      };
+    } else {
+      a[vendorId] = {
+        vendor: c.vendor,
+        children: [c],
+      };
+    }
+    return a;
+  }, {});
+  const result = Object.keys(obj).reduce((a, c) => {
+    const { vendor, children } = obj[c];
+    a.push({
+      children,
+      vendor,
+    });
+
+    return a;
+  }, []);
+
+  return result;
+}

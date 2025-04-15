@@ -7,7 +7,7 @@ POST {{base}}/user/login
 Content-Type: application/json
 
 {
-    "username": "john2",
+    "username": "test",
     "password": "123456"
 }
 ### 保存登录接口拿到的token

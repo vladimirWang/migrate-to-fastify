@@ -11,10 +11,10 @@ export const createExportTrolley = async (req, res) => {
   const { price, count, productId } = req.body;
 
   try {
-    const result = await prisma.saleTrolley.create({
+    const result = await prisma.saleOrder.create({
       data: {
         createdUser: { connect: { id: userId } },
-        saleTrolleyJoinProduct: {
+        saleOrderJoinProduct: {
           create: [
             {
               count,
@@ -75,10 +75,12 @@ export const getExportTrolleyDetailById = async (req, res) => {
         },
       },
     });
+    if (result === null) {
+      res.code(404).send(getSuccessResp(null, "没有找打出货单"));
+    }
     const { saleTrolleyJoinProduct, ...rest } = result;
     const grouped = generateGroupsByVendorId(saleTrolleyJoinProduct);
 
-    // { ...rest, exportProduct: grouped }
     res.send(
       getSuccessResp(
         { ...rest, saleTrolleyJoinProduct: grouped },

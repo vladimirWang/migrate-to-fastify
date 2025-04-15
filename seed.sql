@@ -6,12 +6,12 @@ TRUNCATE table gallery2.`Product`;
 TRUNCATE table gallery2.`Vendor`;
 TRUNCATE table gallery2.`Product`;
 TRUNCATE table gallery2.`Purchase`;
-TRUNCATE table gallery2.`Sale`;
+TRUNCATE table gallery2.`SaleOrder`;
 TRUNCATE table gallery2.`TrolleyJoinProduct`;
 TRUNCATE table gallery2.`ProductJoinPurchase`;
-TRUNCATE table gallery2.`SaleJoinProduct`;
-TRUNCATE table gallery2.`SaleTrolley`;
-TRUNCATE table gallery2.`SaleTrolleyJoinProduct`;
+TRUNCATE table gallery2.`SaleOrderJoinProduct`;
+-- TRUNCATE table gallery2.`SaleTrolley`;
+-- TRUNCATE table gallery2.`SaleTrolleyJoinProduct`;
 TRUNCATE table gallery2.`Platform`;
 TRUNCATE table gallery2.`Express`;
 SET FOREIGN_KEY_CHECKS = 1;
@@ -34,10 +34,10 @@ INSERT INTO gallery2.ProductJoinPurchase  (productId, purchaseId, cost, `count`)
 INSERT INTO gallery2.Purchase (purchaseDate, totalCost, userId, updatedAt, purchaseStatus) values ("2025-02-01", 150, 1, NOW(3), "FINISHED");
 INSERT INTO gallery2.ProductJoinPurchase  (productId, purchaseId, cost, `count`) values (3, 2, 30, 5);
 -- 插入待出货单
-INSERT INTO gallery2.SaleTrolley (updatedAt, createdUserId) values (NOW(3), 1);
-INSERT INTO gallery2.SaleTrolleyJoinProduct (saleTrolleyId, productId, price, `count`) values (1, 3, 30, 1), (1, 4, 40, 2);
+-- INSERT INTO gallery2.SaleTrolley (updatedAt, createdUserId) values (NOW(3), 1);
+-- INSERT INTO gallery2.SaleTrolleyJoinProduct (saleTrolleyId, productId, price, `count`) values (1, 3, 30, 1), (1, 4, 40, 2);
 -- 插入销售平台和快递公司
-insert into gallery2.Platform (name) values ('闲鱼'), ('拼多多'), ('抖音');
+insert into gallery2.Platform (name) values ('线下'), ('闲鱼'), ('拼多多'), ('抖音');
 insert into gallery2.Express (name) values ('顺丰'), ('韵达'), ('中通'), ('百世');
 
 -- 插入出货单（已配送）

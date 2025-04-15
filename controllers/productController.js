@@ -138,3 +138,18 @@ export const getTopValueProduct = async (req, rep) => {
     responseError(rep, error);
   }
 };
+
+export const updateAvailableById = async (req, rep) => {
+  try {
+    const { id } = req.params;
+    const parsedId = Number(id);
+    const result = await prisma.product.update({
+      where: { id: parsedId },
+      data: { available: false },
+    });
+
+    rep.send(getSuccessResp(result, "商品上架状态更新成功"));
+  } catch (error) {
+    responseError(rep, error);
+  }
+};
